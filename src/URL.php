@@ -4,6 +4,13 @@ namespace Inilim\URL;
 
 use Inilim\PunyCode\Punycode;
 
+/**
+ * TODO что если url начинается сразу с домена
+ * TODO проверка path
+ * TODO проверка query
+ * TODO проверка fragment
+ * TODO проверить на наличие двух и более разных алфавитов, encode'ер это не проверяет
+ */
 class URL
 {
     const LEN_MAX_ITEM_LEVEL_DOMAIN = 63;
@@ -154,11 +161,12 @@ class URL
     function domainIDN(string $domain): bool
     {
         // (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++
-        if (\_str()->isMatch('#\p{Latin}#u', $domain)) {
-            return false;
-        }
-        // TODO проверить на наличие двух и более разных алфавитов
-        return \_str()->isMatch('#^([\pL\d\-]++\.)+[\pL]++$#u', $domain);
+        // INFO есть домены содержашие национальный алфавит и латиницу
+        // if (\_str()->isMatch('#\p{Latin}#u', $domain)) {
+        //     return false;
+        // }
+        // TODO проверить на наличие двух и более разных алфавитов (исключая латиницу), encode'ер это не проверяет
+        return \_str()->isMatch('#^([\pL\d\-]++\.)+[\pL]++$#u', $domain) && $this->checkPunycodeEncode($domain);
         // return \_str()->isMatch('#^([\pL\d\-]++\.)+[\pL\d]++$#u', $domain);
     }
 
@@ -217,8 +225,17 @@ class URL
     protected function checkPunycodeDecode(string $domain): bool
     {
         try {
-            $r = $this->punycode->decode($domain);
-            de($r);
+            $this->punycode->decode($domain);
+            return true;
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    protected function checkPunycodeEncode(string $domain): bool
+    {
+        try {
+            $this->punycode->encode($domain);
             return true;
         } catch (\Throwable) {
             return false;

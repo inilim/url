@@ -9,10 +9,12 @@ use Inilim\URL\URL;
 
 Dump::init();
 
-$sqlite = new IPDOSQLite('D:\projects\txt_to_sqlite\domains.sqlite', \_int(), \_arr());
+// $sqlite = new IPDOSQLite('D:\projects\txt_to_sqlite\domains.sqlite', \_int(), \_arr());
 $url = new URL;
+// de(52.94285714285714 % 12);
+$res = $url->punycode->encode('址dа.com');
 
-$res = $url->domainPunycode('xn-------43dcbbaejg4abf1alafg6bji4blgc8dql5b7b1co34a.com');
+// $res = $url->domainPunycode('xn-------43dcbbaejg4abf1alafg6bji4blgc8dql5b7b1co34a.com');
 
 dde($res);
 // 252_757_000
