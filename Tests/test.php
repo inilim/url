@@ -1,7 +1,6 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/src/URL.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Inilim\Dump\Dump;
 use Inilim\IPDO\IPDOSQLite;
@@ -30,13 +29,13 @@ dde($res);
 // de();
 $offset = 55_512_100;
 while (true) {
-    $domains = $sqlite->exec('SELECT * FROM domain WHERE id > :offset LIMIT 100', ['offset' => $offset], 2);
+    $domains = $sqlite->exec('SELECT * FROM domain WHERE id > {offset} LIMIT 100', ['offset' => $offset], 2);
 
     if (!$domains) break;
 
     foreach ($domains as $domain) {
         if (!$url->domain($domain['domain'])) {
-            $sqlite->exec('UPDATE domain SET valid = 0 WHERE id = :id', ['id' => $domain['id']]);
+            $sqlite->exec('UPDATE domain SET valid = 0 WHERE id = {id}', ['id' => $domain['id']]);
             d($offset, $domain);
         }
     }

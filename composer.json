@@ -9,9 +9,17 @@
         },
         "files": []
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Inilim\\Test\\": "Tests/"
+        }
+    },
     "authors": [
         {
             "name": "inilim"
+        },
+        {
+            "name": "Web community"
         }
     ],
     "require": {
@@ -25,6 +33,7 @@
     "require-dev": {
         "phpstan/phpstan": "@stable",
         "inilim/dump": "dev-main",
-        "inilim/ipdo": "dev-main"
+        "inilim/ipdo": "dev-main",
+        "phpunit/phpunit": "^11.4"
     }
 }
