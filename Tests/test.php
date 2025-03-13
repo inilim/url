@@ -8,7 +8,7 @@ use Inilim\URL\URL;
 
 Dump::init();
 
-// $sqlite = new IPDOSQLite('D:\projects\txt_to_sqlite\domains.sqlite', \_int(), \_arr());
+$sqlite = new IPDOSQLite('D:\projects\txt_to_sqlite\domains.sqlite');
 $url = new URL;
 // de(52.94285714285714 % 12);
 $res = $url->punycode->encode('址dа.com');

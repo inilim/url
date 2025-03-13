@@ -11,7 +11,7 @@ use Inilim\PunyCode\Punycode;
  * TODO проверка fragment
  * TODO проверить на наличие двух и более разных алфавитов, encode'ер это не проверяет
  */
-class URL
+final class URL
 {
     const LEN_MAX_ITEM_LEVEL_DOMAIN = 63;
     const LEN_MIN_ITEM_LEVEL_DOMAIN = 2;
