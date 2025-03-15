@@ -26,7 +26,7 @@
         "php": "^8.2",
         "inilim/func_data": "dev-main",
         "inilim/string": "dev-main",
-        "inilim/php-punycode": "dev-master"
+        "inilim/php-punycode": "dev-main"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
