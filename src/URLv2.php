@@ -2,6 +2,8 @@
 
 namespace Inilim\URL;
 
+use Inilim\Tool\Str;
+
 /**
  */
 final class URLv2
@@ -52,18 +54,18 @@ final class URLv2
             !\str_contains($host, '.')
             ||
             // INFO 
-            \_str()->isMatch('#[^\p{Latin}\.\d\-]#', $host)
+            Str::isMatch('#[^\p{Latin}\.\d\-]#', $host)
             ||
-            \_str()->startsWith($host, ['-', '.'])
+            Str::startsWith($host, ['-', '.'])
             ||
-            \_str()->endsWith($host, ['-', '.'])
+            Str::endsWith($host, ['-', '.'])
             ||
-            \_str()->contains($host, ['-.', '.-', '..'])
+            Str::contains($host, ['-.', '.-', '..'])
         ) {
             return false;
         }
 
-        return \_str()->isMatch('#^([a-z\d\-]++\.)+[a-z]++$#', $host);
+        return Str::isMatch('#^([a-z\d\-]++\.)+[a-z]++$#', $host);
     }
 
     function onlyPath(string $path)

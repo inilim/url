@@ -11,7 +11,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Inilim\\Test\\": "Tests/"
+            "Inilim\\Test\\": "tests/"
         }
     },
     "authors": [
@@ -23,10 +23,9 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "inilim/func_data": "dev-main",
-        "inilim/string": "dev-main",
-        "inilim/php-punycode": "dev-main"
+        "php": ">=8.2",
+        "inilim/php-punycode": "dev-main",
+        "inilim/tools": "dev-main"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

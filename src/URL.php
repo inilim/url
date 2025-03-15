@@ -2,6 +2,7 @@
 
 namespace Inilim\URL;
 
+use Inilim\Tool\Str;
 use Inilim\PunyCode\Punycode;
 
 /**
@@ -28,7 +29,7 @@ final class URL
     {
         if (!\str_contains($url, '://')) return false;
 
-        $details = \_str()->parseURL($url);
+        $details = Str::parseURL($url);
 
         if (
             $details['protocol'] === null
@@ -76,8 +77,8 @@ final class URL
             return true;
         }
 
-        $path = \_str()->trim(
-            \_str()->trim($path),
+        $path = Str::trim(
+            Str::trim($path),
             '/'
         );
 
@@ -85,7 +86,7 @@ final class URL
             return true;
         }
 
-        if (\_str()->isMatch('#[^\p{Latin}\/\d_-]#iu', $path)) {
+        if (Str::isMatch('#[^\p{Latin}\/\d_-]#iu', $path)) {
             return false;
         }
     }
@@ -94,8 +95,8 @@ final class URL
     {
         $protocol = $this->normalizeProtocol($protocol);
         return \str_contains(
-            \_str()->wrap(\_data()->URLProtocolsAsString('|'), '|'),
-            \_str()->wrap($protocol, '|')
+            Str::wrap(\_data()->URLProtocolsAsString('|'), '|'),
+            Str::wrap($protocol, '|')
         );
     }
 
@@ -111,24 +112,24 @@ final class URL
         if (
             !\str_contains($domain, '.')
             ||
-            \_str()->length($domain) > self::LEN_MAX_DOMAIN
+            Str::length($domain) > self::LEN_MAX_DOMAIN
             ||
             // INFO 
-            \_str()->isMatch('#[^\pL\.\[\]\:\d\-]#u', $domain)
+            Str::isMatch('#[^\pL\.\[\]\:\d\-]#u', $domain)
             ||
-            \_str()->startsWith($domain, ['-', '.'])
+            Str::startsWith($domain, ['-', '.'])
             ||
-            \_str()->endsWith($domain, ['-', '.'])
+            Str::endsWith($domain, ['-', '.'])
             ||
             // "custom-.ws" < почему то браузер открывает именно с доменом "ws"
             //                          "-."
-            \_str()->contains($domain, ['-.', '.-', '..'])
+            Str::contains($domain, ['-.', '.-', '..'])
         ) {
             return false;
         }
 
         // INFO IPv6 +
-        if (\_str()->contains($domain, ['[', ']'])) {
+        if (Str::contains($domain, ['[', ']'])) {
             return $this->domainIPv6($domain);
         }
         // INFO Punycode
@@ -140,11 +141,11 @@ final class URL
             return $this->domainPunycode($domain);
         }
         // INFO IP +
-        elseif (\_str()->isMatch('#\.\d{1,3}\.#u', $domain) && !\_str()->isMatch('#\pL#u', $domain)) {
+        elseif (Str::isMatch('#\.\d{1,3}\.#u', $domain) && !Str::isMatch('#\pL#u', $domain)) {
             return $this->domainIP($domain);
         }
         // INFO IDN - это доменные имена, содержащие символы национальных алфавитов
-        elseif (\_str()->isMatch('#[^\p{Latin}\d\-\.]#u', $domain)) {
+        elseif (Str::isMatch('#[^\p{Latin}\d\-\.]#u', $domain)) {
             return $this->domainIDN($domain);
         }
         // INFO классический домен
@@ -155,31 +156,31 @@ final class URL
 
     function domainClassic(string $domain): bool
     {
-        return \_str()->isMatch('#^([a-z\d\-]++\.)+[a-z]++$#u', $domain);
+        return Str::isMatch('#^([a-z\d\-]++\.)+[a-z]++$#u', $domain);
     }
 
     function domainIDN(string $domain): bool
     {
         // (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++
         // INFO есть домены содержашие национальный алфавит и латиницу
-        // if (\_str()->isMatch('#\p{Latin}#u', $domain)) {
+        // if (Str::isMatch('#\p{Latin}#u', $domain)) {
         //     return false;
         // }
         // TODO проверить на наличие двух и более разных алфавитов (исключая латиницу), encode'ер это не проверяет
-        return \_str()->isMatch('#^([\pL\d\-]++\.)+[\pL]++$#u', $domain) && $this->checkPunycodeEncode($domain);
-        // return \_str()->isMatch('#^([\pL\d\-]++\.)+[\pL\d]++$#u', $domain);
+        return Str::isMatch('#^([\pL\d\-]++\.)+[\pL]++$#u', $domain) && $this->checkPunycodeEncode($domain);
+        // return Str::isMatch('#^([\pL\d\-]++\.)+[\pL\d]++$#u', $domain);
     }
 
     function domainIP(string $domain): bool
     {
-        return \_str()->isMatch('#^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$#u', $domain);
+        return Str::isMatch('#^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$#u', $domain);
     }
 
     function domainPunycode(string $domain): bool
     {
         // (xn--[a-z\d-]++\.)*+xn--[a-z\d-]++
 
-        return \_str()->isMatch([
+        return Str::isMatch([
             '#^(' . Punycode::PREFIX . '[a-z\d-]++\.)*+' . Punycode::PREFIX . '[a-z\d-]++$#u',
             // для таких случаях "0--0.xn--p1ai" и "1xbet.xn--6frz82g"
             '#^([a-z\d-]++\.)*+' . Punycode::PREFIX . '[a-z\d-]++$#u',
@@ -198,14 +199,14 @@ final class URL
             return false;
         }
 
-        return \_str()->isMatch('#^\[
+        return Str::isMatch('#^\[
                     (?:(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-f]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,1}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,2}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,3}(?:(?:[0-9a-f]{1,4})))?::(?:(?:[0-9a-f]{1,4})):)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,4}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,5}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,6}(?:(?:[0-9a-f]{1,4})))?::))))
                 \]$#u', $domain);
     }
 
     function normalizeProtocol(string $protocol): string
     {
-        return \_str()->lower($protocol);
+        return Str::lower($protocol);
     }
 
     function normalizeDomain(string $domain): string
@@ -213,9 +214,9 @@ final class URL
         $d = $domain;
         // "www.world" | "www.wtf" | "www.xn--8y0a063a"
         if (\substr_count($d, '.') > 1) {
-            $d = \_str()->removeWWW($d);
+            $d = Str::removeWWW($d);
         }
-        return \_str()->lower($d);
+        return Str::lower($d);
     }
 
     // ------------------------------------------------------------------
