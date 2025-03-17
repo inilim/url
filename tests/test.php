@@ -2,15 +2,16 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Inilim\Dump\Dump;
-use Inilim\IPDO\IPDOSQLite;
 use Inilim\URL\URL;
+use Inilim\Tool\Str;
+use Inilim\Dump\Dump;
 use Inilim\URL\URLv2;
+use Inilim\IPDO\IPDOSQLite;
 
 
 Dump::init();
 
-d(URLv2::parseUrl('####!!!123123'));
+d(Str::parseUrl('####!!!123123'));
 
 
 de();
@@ -19,7 +20,7 @@ $urls = \file(__DIR__ . '/good_with_path_en.txt');
 foreach ($urls as $url) {
     $url = \trim($url);
     if ($url === '') continue;
-    d(URLv2::parseUrl($url));
+    d(Str::parseUrl($url));
 }
 
 de();
